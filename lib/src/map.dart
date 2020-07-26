@@ -198,55 +198,88 @@ class MapPickerState extends State<MapPicker> {
   Widget locationCard() {
     return Align(
       alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
-      child: Padding(
-        padding: widget.resultCardPadding ?? EdgeInsets.all(16.0),
-        child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: Consumer<LocationProvider>(
-              builder: (context, locationProvider, _) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                    flex: 20,
-                    child: FutureLoadingBuilder<String>(
-                        future: getAddress(locationProvider.lastIdleLocation),
-                        mutable: true,
-                        loadingIndicator: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            CircularProgressIndicator(),
-                          ],
-                        ),
-                        builder: (context, address) {
-                          _address = address;
-                          return Text(
-                            address ?? 'Unnamed place',
-                            style: TextStyle(fontSize: 18),
-                          );
-                        }),
-                  ),
-                  Spacer(),
-                  FloatingActionButton(
-                    onPressed: () {
-                      Navigator.of(context).pop({
-                        'location': LocationResult(
-                          latLng: locationProvider.lastIdleLocation,
-                          address: _address,
-                        )
-                      });
-                    },
-                    child: widget.resultCardConfirmIcon ??
-                        Icon(Icons.arrow_forward),
-                  ),
-                ],
+      child:
+          Consumer<LocationProvider>(builder: (context, locationProvider, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
+              child: Card(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: Consumer<LocationProvider>(
+                    builder: (context, locationProvider, _) {
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                          height: 80,
+                          width: 60,
+                          color: Color(0XFFD8D8D8),
+                          child: Icon(Icons.my_location)),
+                      SizedBox(width: 15),
+                      FutureLoadingBuilder<String>(
+                          future: getAddress(locationProvider.lastIdleLocation),
+                          mutable: true,
+                          loadingIndicator: CircularProgressIndicator(),
+                          builder: (context, address) {
+                            _address = address;
+                            return Expanded(
+                              child: Text(
+                                address ?? 'Address not found',
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0XFF6D7E8F)),
+                              ),
+                            );
+                          }),
+                    ],
+                  );
+                }),
               ),
-            );
-          }),
-        ),
-      ),
+            ),
+            Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              margin: EdgeInsets.all(0),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              )),
+              child: Container(
+                height: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonTheme(
+                      minWidth: 160,
+                      height: 45,
+                      child: OutlineButton(
+                        borderSide: BorderSide(color: Color(0XFF424242)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(60)),
+                        child: Text(
+                          'Confirm Location',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop({
+                            'location': LocationResult(
+                              latLng: locationProvider.lastIdleLocation,
+                              address: _address,
+                            )
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+      }),
     );
   }
 
@@ -272,13 +305,13 @@ class MapPickerState extends State<MapPicker> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.place, size: 56),
+            Icon(Icons.place, size: 56, color: Color(0XFFff4b4b)),
             Container(
               decoration: ShapeDecoration(
                 shadows: [
                   BoxShadow(
                     blurRadius: 4,
-                    color: Colors.black38,
+                    color: Color(0XFFF5A91C),
                   ),
                 ],
                 shape: CircleBorder(
@@ -392,15 +425,19 @@ class _MapFabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topRight,
-      margin: const EdgeInsets.only(top: kToolbarHeight + 24, right: 8),
+      margin: const EdgeInsets.only(top: kToolbarHeight + 50, right: 8),
       child: Column(
         children: <Widget>[
           if (layersButtonEnabled)
             FloatingActionButton(
               onPressed: onToggleMapTypePressed,
+              backgroundColor: Colors.white,
               materialTapTargetSize: MaterialTapTargetSize.padded,
               mini: true,
-              child: const Icon(Icons.layers),
+              child: const Icon(
+                Icons.layers,
+                color: Color(0XFFA2B6C7),
+              ),
               heroTag: "layers",
             ),
           if (myLocationButtonEnabled)
@@ -408,7 +445,11 @@ class _MapFabs extends StatelessWidget {
               onPressed: onMyLocationPressed,
               materialTapTargetSize: MaterialTapTargetSize.padded,
               mini: true,
-              child: const Icon(Icons.my_location),
+              backgroundColor: Colors.white,
+              child: const Icon(
+                Icons.my_location,
+                color: Color(0XFFA2B6C7),
+              ),
               heroTag: "myLocation",
             ),
         ],

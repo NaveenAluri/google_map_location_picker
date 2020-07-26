@@ -368,6 +368,7 @@ class LocationPickerState extends State<LocationPicker> {
             iconTheme: Theme.of(context).iconTheme,
             elevation: 0,
             backgroundColor: widget.appBarColor,
+            automaticallyImplyLeading: false,
             key: appBarKey,
             title: SearchInput(
               (input) => searchPlace(input),
